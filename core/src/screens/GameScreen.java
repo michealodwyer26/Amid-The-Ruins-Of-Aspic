@@ -1,6 +1,7 @@
 package screens;
 
 import amid.the.ruins.of.aspic.Platformer;
+import sprites.Gary;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,6 +34,8 @@ public class GameScreen implements Screen {
 	
 	private World world;
 	private Box2DDebugRenderer b2dr;
+	
+	private Gary gary;
 	
 	public GameScreen(Platformer game) {		
 		this.game = game;
@@ -70,6 +73,7 @@ public class GameScreen implements Screen {
 			body.createFixture(fdef);
 		}
 		
+		gary = new Gary(world);
 	}
 
 	@Override
@@ -78,14 +82,14 @@ public class GameScreen implements Screen {
 	}
 	
 	private void handleInput() {
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			gamecam.translate(-0.02f, 0);
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			gamecam.translate(0.02f, 0);
-		if(Gdx.input.isKeyPressed(Input.Keys.UP))
-			gamecam.translate(0, 0.02f);
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-			gamecam.translate(0, -0.02f);
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+			gary.b2body.applyLinearImpulse(new Vector2(0, 4f), gary.b2body.getWorldCenter(), true);
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= 2)
+			gary.b2body.applyLinearImpulse(new Vector2(0.1f, 0), gary.b2body.getWorldCenter(), true);
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gary.b2body.getLinearVelocity().x >= -2)
+			gary.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), gary.b2body.getWorldCenter(), true);
 	}
 
 	@Override
@@ -96,6 +100,10 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		handleInput();
+		
+		world.step(1 / 60f, 6, 2);
+		
+		gamecam.position.x = gary.b2body.getPosition().x;
 		
 		mapRenderer.setView(gamecam);
 		mapRenderer.render();

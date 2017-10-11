@@ -20,16 +20,19 @@ public class Gary extends Sprite {
 	
 	public void defineGary() {
 		BodyDef bdef = new BodyDef();
-		bdef.position.set((10 * 16) / Platformer.PPM, (90 * 16) / Platformer.PPM);
+		bdef.position.set((8 * 16) / Platformer.PPM, (32 * 16) / Platformer.PPM);
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		
 		b2body = world.createBody(bdef);
 		
 		FixtureDef fdef = new FixtureDef();
+		fdef.friction = 0.80f;
+		
 		CircleShape shape = new CircleShape();
-		shape.setRadius(5 / Platformer.PPM);
+		shape.setRadius(12 / Platformer.PPM);
 		
 		fdef.shape = shape;
+		
 		b2body.createFixture(fdef);
 	}
 }
