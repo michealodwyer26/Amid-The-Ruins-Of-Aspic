@@ -16,7 +16,7 @@ public class Gary extends Sprite {
 	
 	public final int MAX_SPEED = 2;
 	
-	private final float FRICTION = 0.8f;
+	private final float FRICTION = 0.65f;
 	private final int RADIUS = 12;
 	
 	private final int STARTING_TILE_X = 8;

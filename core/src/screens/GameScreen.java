@@ -2,6 +2,7 @@ package screens;
 
 import amid.the.ruins.of.aspic.Platformer;
 import sprites.Gary;
+import tools.B2WorldCreator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -53,29 +54,11 @@ public class GameScreen implements Screen {
 		gamecam.position.set(Platformer.startCamPos);
 
 		world = new World(Platformer.GRAVITY, true);
+		
 		b2dr = new Box2DDebugRenderer();
 		b2dr.SHAPE_STATIC.set(1, 0, 0, 1);
 		
-		BodyDef bdef = new BodyDef();
-		PolygonShape shape = new PolygonShape();
-		FixtureDef fdef = new FixtureDef();
-		Body body;
-		
-		// Get the ground Map Objects
-		
-		for(MapObject object : map.getLayers().get("Ground").getObjects().getByType(RectangleMapObject.class)) {
-			Rectangle rect = ((RectangleMapObject) object).getRectangle();
-			
-			bdef.type = BodyDef.BodyType.StaticBody;
-			bdef.position.set((rect.getX() + rect.getWidth()/2) / Platformer.PPM, (rect.getY() + rect.getHeight()/2) / Platformer.PPM);
-			
-			body = world.createBody(bdef);
-			
-			shape.setAsBox(rect.getWidth() / 2 / Platformer.PPM, rect.getHeight() / 2 / Platformer.PPM);
-			fdef.shape = shape; 
-			
-			body.createFixture(fdef);
-		}
+		new B2WorldCreator(world, map);
 		
 		gary = new Gary(world);
 	}
@@ -139,6 +122,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		
+		map.dispose();
+		mapRenderer.dispose();
+		world.dispose();
+		b2dr.dispose();
 	}
 }
