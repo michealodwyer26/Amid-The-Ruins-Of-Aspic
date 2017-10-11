@@ -35,6 +35,10 @@ public class GameScreen implements Screen {
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
+	private final float timeStep = 1 / 60f;
+	private final int velocityIterations = 6;
+	private final int positionsInterations = 2;
+	
 	private Gary gary;
 	
 	public GameScreen(Platformer game) {		
@@ -45,10 +49,10 @@ public class GameScreen implements Screen {
 		
 		map = new TmxMapLoader().load("data/ruinsOfAspic.tmx");
 		mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / Platformer.PPM);
-		
-		gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2f + (384 / Platformer.PPM), 0); // Adds an amount in m to set the camera at the right y value
-		
-		world = new World(new Vector2(0, -10), true);
+
+		gamecam.position.set(Platformer.startCamPos);
+
+		world = new World(Platformer.GRAVITY, true);
 		b2dr = new Box2DDebugRenderer();
 		b2dr.SHAPE_STATIC.set(1, 0, 0, 1);
 		
@@ -83,13 +87,13 @@ public class GameScreen implements Screen {
 	
 	private void handleInput() {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-			gary.b2body.applyLinearImpulse(new Vector2(0, 4f), gary.b2body.getWorldCenter(), true);
+			gary.b2body.applyLinearImpulse(gary.jumpImpulse, gary.b2body.getWorldCenter(), true);
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= 2)
-			gary.b2body.applyLinearImpulse(new Vector2(0.1f, 0), gary.b2body.getWorldCenter(), true);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= gary.MAX_SPEED)
+			gary.b2body.applyLinearImpulse(gary.runRightImpulse, gary.b2body.getWorldCenter(), true);
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gary.b2body.getLinearVelocity().x >= -2)
-			gary.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), gary.b2body.getWorldCenter(), true);
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gary.b2body.getLinearVelocity().x >= -gary.MAX_SPEED)
+			gary.b2body.applyLinearImpulse(gary.runLeftImpulse, gary.b2body.getWorldCenter(), true);
 	}
 
 	@Override
@@ -101,7 +105,7 @@ public class GameScreen implements Screen {
 		
 		handleInput();
 		
-		world.step(1 / 60f, 6, 2);
+		world.step(timeStep, velocityIterations, positionsInterations);
 		
 		gamecam.position.x = gary.b2body.getPosition().x;
 		
