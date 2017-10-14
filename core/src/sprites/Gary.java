@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.Array;
 import amid.the.ruins.of.aspic.Platformer;
 
 public class Gary extends Sprite {
+	public enum State { JUMPING, STANDING, RUNNING, FALLING };
+	public State currentState;
+	public State previousState;
 	public World world;
 	public Body b2body;
 	private TextureRegion stand;
@@ -33,17 +36,42 @@ public class Gary extends Sprite {
 	public final Vector2 runRightImpulse = new Vector2(0.1f, 0);
 	public final Vector2 runLeftImpulse = new Vector2(-0.1f, 0);
 	
-	private Animation idleRightAnimation;
-	private Animation jumpRightAnimation;
-	private Animation runRightAnimation;
-	private Animation stopRightAnimation;
-	private Animation crouchRightAnimation;
-	private Animation whipRightAnimation;
+	private Animation idleAnimation;
+	private Animation jumpAnimation;
+	private Animation runAnimation;
+
+	private float stateTimer;
+	private boolean runningRight;
 	
 	
 	public Gary(World world) {
 		super(spriteSheet);
 		this.world = world;
+		
+		currentState = State.STANDING;
+		previousState = State.STANDING;
+		stateTimer = 0;
+		runningRight = true;
+		
+		Array<TextureRegion> frames = new Array<TextureRegion>();
+		for(int i = 13; i <= 36; i += 26) {
+			frames.add(new TextureRegion(getTexture(), i, 86, 21, 33));
+		}
+		frames.add(new TextureRegion(getTexture(), 59, 86, 21, 33));
+		
+		for(int i = 81; i <= 109; i += 28) {
+			frames.add(new TextureRegion(getTexture(), i, 87, 25, 32));
+		}
+		for(int i = 136; i <= 159; i += 23) {
+			frames.add(new TextureRegion(getTexture(), i, 86, 21, 33));
+		}
+		frames.add(new TextureRegion(getTexture(), 182, 86, 22, 33));
+		frames.add(new TextureRegion(getTexture(), 206, 87, 22, 32));
+		frames.add(new TextureRegion(getTexture(), 230, 87, 21, 32));
+		
+		runAnimation = new Animation(.7f, frames);
+		frames.clear();
+		
 		defineGary();
 		stand = new TextureRegion(getTexture(), 13, 4, 16, 35);
 		setBounds(13, 4, 16 / Platformer.PPM, 35 / Platformer.PPM);
@@ -52,9 +80,48 @@ public class Gary extends Sprite {
 	
 	public void update(float dt) {
 		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-		
+		setRegion(getFrame(dt));
 	}
 	
+	private TextureRegion getFrame(float dt) {
+		currentState = getState();
+		
+		TextureRegion region;
+		switch(currentState) {
+			case RUNNING:
+				region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
+				break;
+			case FALLING:
+			case STANDING:
+			default:
+				region = stand;
+				break;
+		}
+		
+		if((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+			region.flip(true, false);
+			runningRight = false;
+		}
+		else if((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+			region.flip(true, false);
+			runningRight = true;
+		}
+		
+		stateTimer = currentState == previousState ? stateTimer + dt : 0;
+		previousState = currentState;
+		return region;
+	}
+	
+	public State getState() {
+		if(b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING))
+			return State.JUMPING;
+		if(b2body.getLinearVelocity().y < 0)
+			return State.FALLING;
+		else if(b2body.getLinearVelocity().x != 0)
+			return State.RUNNING;
+		else
+			return State.STANDING;
+	}
 	public void defineGary() {
 		float startX = (STARTING_TILE_X * Platformer.TILE_SIZE) / Platformer.PPM;
 		float startY = (STARTING_TILE_Y * Platformer.TILE_SIZE) / Platformer.PPM;
