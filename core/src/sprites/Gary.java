@@ -17,16 +17,17 @@ import amid.the.ruins.of.aspic.Platformer;
 
 public class Gary extends Sprite {
 	public enum State { JUMPING, STANDING, RUNNING, FALLING };
+	
 	public State currentState;
 	public State previousState;
 	public World world;
 	public Body b2body;
-	private TextureRegion stand;
+	private TextureRegion standFrame;
 	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/betterGaryAnimationFrames.png"));
 	
-	public final int MAX_SPEED = 2;
+	public final float MAX_SPEED = 1.5f;
 	
-	private final float FRICTION = 0.65f;
+	private final float FRICTION = 0.45f;
 	private final int RADIUS = 18;
 	
 	private final int STARTING_TILE_X = 8;
@@ -36,9 +37,9 @@ public class Gary extends Sprite {
 	public final Vector2 runRightImpulse = new Vector2(0.1f, 0);
 	public final Vector2 runLeftImpulse = new Vector2(-0.1f, 0);
 	
-	private Animation idleAnimation;
-	private Animation jumpAnimation;
-	private Animation runAnimation;
+	private Animation<TextureRegion> jumpAnimation;
+	private Animation<TextureRegion> runAnimation;
+	private Animation<TextureRegion> fallAnimation;
 
 	private float stateTimer;
 	private boolean runningRight;
@@ -46,6 +47,7 @@ public class Gary extends Sprite {
 	
 	public Gary(World world) {
 		super(spriteSheet);
+		
 		this.world = world;
 		
 		currentState = State.STANDING;
@@ -54,28 +56,52 @@ public class Gary extends Sprite {
 		runningRight = true;
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
-		for(int i = 13; i <= 36; i += 26) {
+		
+		// Run animation
+		for(int i = 13; i <= 36; i += 26)
 			frames.add(new TextureRegion(getTexture(), i, 86, 21, 33));
-		}
+		
 		frames.add(new TextureRegion(getTexture(), 59, 86, 21, 33));
 		
-		for(int i = 81; i <= 109; i += 28) {
+		for(int i = 81; i <= 109; i += 28)
 			frames.add(new TextureRegion(getTexture(), i, 87, 25, 32));
-		}
-		for(int i = 136; i <= 159; i += 23) {
+		
+		for(int i = 136; i <= 159; i += 23) 
 			frames.add(new TextureRegion(getTexture(), i, 86, 21, 33));
-		}
+		
 		frames.add(new TextureRegion(getTexture(), 182, 86, 22, 33));
 		frames.add(new TextureRegion(getTexture(), 206, 87, 22, 32));
 		frames.add(new TextureRegion(getTexture(), 230, 87, 21, 32));
 		
-		runAnimation = new Animation(.7f, frames);
+		runAnimation = new Animation<TextureRegion>(.1f, frames);
 		frames.clear();
 		
+		// Jump animation
+		for(int i = 13; i <= 38; i += 25)
+			frames.add(new TextureRegion(getTexture(), i, 43, 24, 35));
+
+		frames.add(new TextureRegion(getTexture(), 63, 46, 23, 32));
+		frames.add(new TextureRegion(getTexture(), 88, 41, 24, 37));
+		
+		jumpAnimation = new Animation<TextureRegion>(.3f, frames);
+		frames.clear();
+		
+		// Fall animation
+		frames.add(new TextureRegion(getTexture(), 114, 41, 24, 37));
+		for(int i = 140; i <= 164; i += 24)
+			frames.add(new TextureRegion(getTexture(), i, 46, 22, 32));
+
+		frames.add(new TextureRegion(getTexture(), 188, 47, 21, 31));
+		frames.add(new TextureRegion(getTexture(), 211, 46, 18, 32));
+		
+		fallAnimation = new Animation<TextureRegion>(.3f, frames);
+		frames.clear();
+		
+		
 		defineGary();
-		stand = new TextureRegion(getTexture(), 13, 4, 16, 35);
+		standFrame = new TextureRegion(getTexture(), 13, 4, 16, 35);
 		setBounds(13, 4, 16 / Platformer.PPM, 35 / Platformer.PPM);
-		setRegion(stand);
+		setRegion(standFrame);
 	}
 	
 	public void update(float dt) {
@@ -91,10 +117,18 @@ public class Gary extends Sprite {
 			case RUNNING:
 				region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
 				break;
+				
 			case FALLING:
+				region = (TextureRegion) fallAnimation.getKeyFrame(stateTimer, true);
+				break;
+				
+			case JUMPING:
+				region = (TextureRegion) jumpAnimation.getKeyFrame(stateTimer, true);
+				break;
+				
 			case STANDING:
 			default:
-				region = stand;
+				region = standFrame;
 				break;
 		}
 		
@@ -113,15 +147,16 @@ public class Gary extends Sprite {
 	}
 	
 	public State getState() {
-		if(b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING))
+		if(b2body.getLinearVelocity().y > 0)
 			return State.JUMPING;
-		if(b2body.getLinearVelocity().y < 0)
+		else if(b2body.getLinearVelocity().y < 0)
 			return State.FALLING;
 		else if(b2body.getLinearVelocity().x != 0)
 			return State.RUNNING;
 		else
 			return State.STANDING;
 	}
+	
 	public void defineGary() {
 		float startX = (STARTING_TILE_X * Platformer.TILE_SIZE) / Platformer.PPM;
 		float startY = (STARTING_TILE_Y * Platformer.TILE_SIZE) / Platformer.PPM;
