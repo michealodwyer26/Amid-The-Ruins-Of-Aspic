@@ -61,15 +61,24 @@ public class GameScreen implements Screen {
 	}
 	
 	private void handleInput() {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			gary.b2body.applyLinearImpulse(gary.jumpImpulse, gary.b2body.getWorldCenter(), true);
+		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= gary.MAX_SPEED)
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= gary.MAX_SPEED) {
 			gary.b2body.applyLinearImpulse(gary.runRightImpulse, gary.b2body.getWorldCenter(), true);
+		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gary.b2body.getLinearVelocity().x >= -gary.MAX_SPEED)
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gary.b2body.getLinearVelocity().x >= -gary.MAX_SPEED) {
 			gary.b2body.applyLinearImpulse(gary.runLeftImpulse, gary.b2body.getWorldCenter(), true);
+
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.W) && !gary.isStandingWhipping) {
+			gary.isStandingWhipping = true;
+		}
 	}
+	
 
 	@Override
 	public void render(float delta) {
@@ -89,7 +98,7 @@ public class GameScreen implements Screen {
 		mapRenderer.setView(gamecam);
 		mapRenderer.render();
 		
-		// b2dr.render(world, gamecam.combined);
+		b2dr.render(world, gamecam.combined);
 		
 		game.batch.setProjectionMatrix(gamecam.combined);
 		game.batch.begin();

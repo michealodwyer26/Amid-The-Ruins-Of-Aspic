@@ -10,15 +10,15 @@ import screens.MainMenuScreen;
 public class Platformer extends Game {
 	public SpriteBatch batch;
 	
-	public static final int V_WIDTH = 800;
-	public static final int V_HEIGHT = 416;
+	public static final int V_WIDTH = 400;
+	public static final int V_HEIGHT = 208;
 	public static final float PPM = 100;
 	public static final int TILE_SIZE = 16;
 	
 	public static final Vector2 GRAVITY = new Vector2(0, -10);
 	
 	private static final float startCamX = (25 * Platformer.TILE_SIZE) / Platformer.PPM;
-	private static final float startCamY = (37 * Platformer.TILE_SIZE) / Platformer.PPM;
+	private static final float startCamY = (34 * Platformer.TILE_SIZE) / Platformer.PPM;
 	private static final float startCamZ = 0f;
 	
 	public static final Vector3 startCamPos = new Vector3(startCamX, startCamY, startCamZ);
