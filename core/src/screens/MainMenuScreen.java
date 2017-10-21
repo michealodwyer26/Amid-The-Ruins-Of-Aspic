@@ -21,6 +21,8 @@ public class MainMenuScreen implements Screen {
 	private Viewport viewport;
 	private Stage stage;
 	Label text;
+	Label instruction1;
+	Label instruction2;
 		
 	public MainMenuScreen(Platformer game) {
 		this.game = game;
@@ -33,8 +35,14 @@ public class MainMenuScreen implements Screen {
 		table.setFillParent(true);
 		
 		text = new Label("PRESS ENTER", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+		instruction1 = new Label("MOVE WITH THE ARROW KEYS", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+		instruction2 = new Label("PRESS W TO WHIP, PRESS SPACE TO JUMP", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 		
 		table.add(text).expandX();
+		table.row();
+		table.add(instruction1).expandX();
+		table.row();
+		table.add(instruction2).expandX();
 		
 		stage.addActor(table);
 	}
