@@ -63,10 +63,17 @@ public class Gary extends Sprite {
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		
 		// Idle Animation
-		for(int i = 13; i <= 67; i += 18)
-			frames.add(new TextureRegion(getTexture(), i, 4, 16, 35));
+		for(int i = 13; i <= 67; i += 18) {
+			if(i == 13) {
+				// Adds the first frame fifteen times
+				for(int noOfFrames = 0; noOfFrames <= 15; noOfFrames++)
+					frames.add(new TextureRegion(getTexture(), i, 4, 16, 35));
+			}
+			else
+				frames.add(new TextureRegion(getTexture(), i, 4, 16, 35));
+		}
 		
-		idleAnimation = new Animation<TextureRegion>(.3f, frames);
+		idleAnimation = new Animation<TextureRegion>(.1f, frames);
 		frames.clear();
 		
 		// Run animation
