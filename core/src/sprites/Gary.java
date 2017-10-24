@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import amid.the.ruins.of.aspic.Platformer;
 
 public class Gary extends Sprite {
-	public enum State { JUMPING, STANDING, RUNNING, FALLING, STOPPING, STANDING_WHIPPING };
+	public enum State { JUMPING, STANDING, RUNNING, FALLING, STOPPING, STANDING_WHIPPING, LANDING };
 	
 	public State currentState;
 	public State previousState;
@@ -24,6 +24,8 @@ public class Gary extends Sprite {
 	public Body b2body;
 	
 	public boolean isStandingWhipping = false;
+	public boolean isLanding = false;
+	
 	private TextureRegion standFrame;
 	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/betterGaryAnimationFrames.png"));
 	
@@ -45,6 +47,7 @@ public class Gary extends Sprite {
 	private Animation<TextureRegion> stopAnimation;
 	private Animation<TextureRegion> standingWhipAnimation;
 	private Animation<TextureRegion> idleAnimation;
+	private Animation<TextureRegion> landAnimation;
 
 	private float stateTimer;
 	private boolean runningRight;
@@ -64,6 +67,7 @@ public class Gary extends Sprite {
 		
 		// Idle Animation
 		for(int i = 13; i <= 67; i += 18) {
+			
 			if(i == 13) {
 				// Adds the first frame fifteen times
 				for(int noOfFrames = 0; noOfFrames <= 15; noOfFrames++)
@@ -100,47 +104,54 @@ public class Gary extends Sprite {
 			frames.add(new TextureRegion(getTexture(), i, 43, 24, 35));
 
 		frames.add(new TextureRegion(getTexture(), 63, 46, 23, 32));
-		frames.add(new TextureRegion(getTexture(), 88, 41, 24, 37));
 		
-		jumpAnimation = new Animation<TextureRegion>(.3f, frames);
+		for(int noOfFrames = 0; noOfFrames <= 20; noOfFrames++)
+			// Adds this frame 20 times
+			frames.add(new TextureRegion(getTexture(), 88, 41, 24, 37));
+		
+		jumpAnimation = new Animation<TextureRegion>(.05f, frames);
 		frames.clear();
 		
-		// Fall animation
+		// Fall animation			
 		frames.add(new TextureRegion(getTexture(), 114, 41, 24, 37));
-		for(int i = 140; i <= 164; i += 24)
-			frames.add(new TextureRegion(getTexture(), i, 46, 22, 32));
-
+		
+		fallAnimation = new Animation<TextureRegion>(.05f, frames);
+		frames.clear();
+		
+		// Land animation
+		frames.add(new TextureRegion(getTexture(), 140, 46, 22, 23));
+		frames.add(new TextureRegion(getTexture(), 164, 46, 22, 32));
 		frames.add(new TextureRegion(getTexture(), 188, 47, 21, 31));
 		frames.add(new TextureRegion(getTexture(), 211, 46, 18, 32));
 		
-		fallAnimation = new Animation<TextureRegion>(.1f, frames);
+		landAnimation = new Animation<TextureRegion>(0.05f, frames);
 		frames.clear();
-		
+
 		// Stop animation
 		frames.add(new TextureRegion(getTexture(), 13, 123, 20, 32));
 		frames.add(new TextureRegion(getTexture(), 35, 123, 23, 32));
 		frames.add(new TextureRegion(getTexture(), 60, 123, 21, 32));
 		frames.add(new TextureRegion(getTexture(), 83, 121, 19, 34));
 		
-		stopAnimation = new Animation<TextureRegion>(.1f, frames);
+		stopAnimation = new Animation<TextureRegion>(.05f, frames);
 		frames.clear();
 		
 		// Standing whip animation
-		frames.add(new TextureRegion(getTexture(), 13, 190, 19, 34)); // 1
-		frames.add(new TextureRegion(getTexture(), 34, 192, 21, 32)); // 2
-		frames.add(new TextureRegion(getTexture(), 57, 192, 23, 32)); // 3
-		frames.add(new TextureRegion(getTexture(), 82, 192, 28, 32)); // 4
-		frames.add(new TextureRegion(getTexture(), 112, 192, 29, 32)); // 5
-		frames.add(new TextureRegion(getTexture(), 143, 190, 29, 34)); // 6
-		frames.add(new TextureRegion(getTexture(), 174, 189, 34, 35)); // 7
-		frames.add(new TextureRegion(getTexture(), 210, 190, 39, 34)); // 8
-		frames.add(new TextureRegion(getTexture(), 251, 195, 67, 29)); // 9
-		frames.add(new TextureRegion(getTexture(), 320, 195, 68, 29)); // 10
-		frames.add(new TextureRegion(getTexture(), 390, 195, 67, 29)); // 11
-		frames.add(new TextureRegion(getTexture(), 459, 193, 54, 31)); // 12
-		frames.add(new TextureRegion(getTexture(), 515, 193, 45, 31)); // 13
-		frames.add(new TextureRegion(getTexture(), 562, 192, 23, 32)); // 14
-		frames.add(new TextureRegion(getTexture(), 587, 190, 19, 34)); // 15
+		frames.add(new TextureRegion(getTexture(), 13, 190, 19, 34));
+		frames.add(new TextureRegion(getTexture(), 34, 192, 21, 32));
+		frames.add(new TextureRegion(getTexture(), 57, 192, 23, 32));
+		frames.add(new TextureRegion(getTexture(), 82, 192, 28, 32));
+		frames.add(new TextureRegion(getTexture(), 112, 192, 29, 32));
+		frames.add(new TextureRegion(getTexture(), 143, 190, 29, 34)); 
+		frames.add(new TextureRegion(getTexture(), 174, 189, 34, 35)); 
+		frames.add(new TextureRegion(getTexture(), 210, 190, 39, 34)); 
+		frames.add(new TextureRegion(getTexture(), 251, 195, 67, 29)); 
+		frames.add(new TextureRegion(getTexture(), 320, 195, 68, 29)); 
+		frames.add(new TextureRegion(getTexture(), 390, 195, 67, 29)); 
+		frames.add(new TextureRegion(getTexture(), 459, 193, 54, 31)); 
+		frames.add(new TextureRegion(getTexture(), 515, 193, 45, 31)); 
+		frames.add(new TextureRegion(getTexture(), 562, 192, 23, 32)); 
+		frames.add(new TextureRegion(getTexture(), 587, 190, 19, 34)); 
 
 		standingWhipAnimation = new Animation<TextureRegion>(.05f, frames);
 		frames.clear();
@@ -164,13 +175,19 @@ public class Gary extends Sprite {
 		setRegion(currentFrame);
 		setSize(currentFrame.getRegionWidth() / Platformer.PPM, currentFrame.getRegionHeight() / Platformer.PPM);
 		
+		
 		if(standingWhipAnimation.isAnimationFinished(stateTimer) && isStandingWhipping) {
 			isStandingWhipping = false;
+		}
+		
+		if(landAnimation.isAnimationFinished(stateTimer) && isLanding) {
+			isLanding = false;
 		}
 	}
 	
 	private TextureRegion getFrame(float dt) {
 		currentState = getState();
+		
 		
 		TextureRegion region;
 		switch(currentState) {
@@ -194,10 +211,13 @@ public class Gary extends Sprite {
 				region = (TextureRegion) standingWhipAnimation.getKeyFrame(stateTimer);
 				break;
 				
+			case LANDING:
+				region = (TextureRegion) landAnimation.getKeyFrame(stateTimer);
+				break;
+				
 			case STANDING:
 			default:
 				region = (TextureRegion) idleAnimation.getKeyFrame(stateTimer, true);
-				System.out.println("case STANDING");
 				break;
 		}
 		
@@ -205,6 +225,7 @@ public class Gary extends Sprite {
 			region.flip(true, false);
 			runningRight = false;
 		}
+		
 		else if((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
 			region.flip(true, false);
 			runningRight = true;
@@ -216,21 +237,29 @@ public class Gary extends Sprite {
 	}
 	
 	public State getState() {
+		
 		if(isStandingWhipping)
 			return State.STANDING_WHIPPING;
-		if(b2body.getLinearVelocity().y > 0)
+		
+		if(isLanding)
+			return State.LANDING;
+		
+		else if(b2body.getLinearVelocity().y > 0)
 			return State.JUMPING;
+		
 		else if(b2body.getLinearVelocity().y < 0)
 			return State.FALLING;
-		else if(b2body.getLinearVelocity().x != 0)
+
+		else if(b2body.getLinearVelocity().x != 0 && b2body.getLinearVelocity().y == 0)
 			return State.RUNNING;
-		else if(b2body.getLinearVelocity().x == 0)
+		
+		else if(b2body.getLinearVelocity().x == 0 && b2body.getLinearVelocity().y == 0)
 			return State.STANDING;
-		else if(b2body.getLinearVelocity().x <= 1 || b2body.getLinearVelocity().x >= -1)
+		
+		else if(b2body.getLinearVelocity().x <= .5 || b2body.getLinearVelocity().x >= -.5)
 			return State.STOPPING;
 		
-		else
-			return State.STANDING;
+		return State.STANDING;
 	}
 	
 	public void defineGary() {
@@ -251,6 +280,6 @@ public class Gary extends Sprite {
 		
 		fdef.shape = shape;
 		
-		b2body.createFixture(fdef);
+		b2body.createFixture(fdef).setUserData(this);
 	}
 }

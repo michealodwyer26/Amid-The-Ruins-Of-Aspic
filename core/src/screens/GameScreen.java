@@ -3,6 +3,7 @@ package screens;
 import amid.the.ruins.of.aspic.Platformer;
 import sprites.Gary;
 import tools.B2WorldCreator;
+import tools.WorldContactListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -52,6 +53,7 @@ public class GameScreen implements Screen {
 		
 		new B2WorldCreator(world, map);
 		
+		world.setContactListener(new WorldContactListener());
 		gary = new Gary(world);
 	}
 

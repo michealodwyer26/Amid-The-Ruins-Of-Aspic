@@ -33,7 +33,7 @@ public class B2WorldCreator {
 			shape.setAsBox(rect.getWidth() / 2 / Platformer.PPM, rect.getHeight() / 2 / Platformer.PPM);
 			fdef.shape = shape; 
 			
-			body.createFixture(fdef);
+			body.createFixture(fdef).setUserData("ground");
 		}
 	}
 }
