@@ -17,7 +17,7 @@ import amid.the.ruins.of.aspic.Platformer;
 
 public class Gary extends Sprite {
 	public enum State { JUMPING, STANDING, RUNNING, FALLING, STOPPING, STANDING_WHIPPING, LANDING };
-	
+		
 	public State currentState;
 	public State previousState;
 	public World world;

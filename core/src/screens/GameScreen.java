@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -54,6 +55,7 @@ public class GameScreen implements Screen {
 		new B2WorldCreator(world, map);
 		
 		world.setContactListener(new WorldContactListener());
+		
 		gary = new Gary(world);
 	}
 
@@ -94,6 +96,18 @@ public class GameScreen implements Screen {
 		world.step(timeStep, velocityIterations, positionsInterations);
 		
 		gary.update(delta);
+		
+		System.out.println(gary.b2body.getPosition().x);
+		System.out.println(gary.b2body.getPosition().y);
+		
+		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
+			game.livesRemaining--;
+			
+			if(game.livesRemaining >= 0)
+				game.setScreen(new LivesRemainingScreen(game));
+			else
+				game.setScreen(new GameOverScreen(game));
+		}
 		
 		gamecam.position.x = gary.b2body.getPosition().x;
 		

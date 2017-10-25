@@ -6,9 +6,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import screens.MainMenuScreen;
+import sprites.Gary;
 
 public class Platformer extends Game {
 	public SpriteBatch batch;
+	public int livesRemaining;
+
 	
 	public static final int V_WIDTH = 400;
 	public static final int V_HEIGHT = 208;
@@ -26,6 +29,7 @@ public class Platformer extends Game {
 	@Override
 	public void create () {
 		this.batch = new SpriteBatch();
+		livesRemaining = 3;
 		
 		this.setScreen(new MainMenuScreen(this));
 	}
