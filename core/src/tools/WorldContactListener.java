@@ -20,6 +20,7 @@ public class WorldContactListener implements ContactListener {
 			
 			Gary gary = (Gary) garyFixture.getUserData();
 			gary.isLanding = true;
+			gary.jumpsLeft = 2;
 		}
 	}
 

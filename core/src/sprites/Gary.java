@@ -25,6 +25,7 @@ public class Gary extends Sprite {
 	
 	public boolean isStandingWhipping = false;
 	public boolean isLanding = false;
+	public int jumpsLeft = 2;
 	
 	private TextureRegion standFrame;
 	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/betterGaryAnimationFrames.png"));
@@ -38,6 +39,7 @@ public class Gary extends Sprite {
 	private final int STARTING_TILE_Y = 30;
 	
 	public final Vector2 jumpImpulse = new Vector2(0, 4f);
+	public final Vector2 weakerJumpImpulse = new Vector2(0, 2f);
 	public final Vector2 runRightImpulse = new Vector2(0.1f, 0);
 	public final Vector2 runLeftImpulse = new Vector2(-0.1f, 0);
 	

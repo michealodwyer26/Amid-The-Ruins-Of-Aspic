@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -65,8 +64,13 @@ public class GameScreen implements Screen {
 	}
 	
 	private void handleInput() {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			gary.b2body.applyLinearImpulse(gary.jumpImpulse, gary.b2body.getWorldCenter(), true);
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && gary.jumpsLeft > 0) {
+			gary.jumpsLeft--;
+			if(gary.jumpsLeft == 1)
+				gary.b2body.applyLinearImpulse(gary.jumpImpulse, gary.b2body.getWorldCenter(), true);
+			else
+				gary.b2body.applyLinearImpulse(gary.weakerJumpImpulse, gary.b2body.getWorldCenter(), true);
+
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gary.b2body.getLinearVelocity().x <= gary.MAX_SPEED) {
@@ -97,8 +101,7 @@ public class GameScreen implements Screen {
 		
 		gary.update(delta);
 		
-		System.out.println(gary.b2body.getPosition().x);
-		System.out.println(gary.b2body.getPosition().y);
+		System.out.println(gary.jumpsLeft);
 		
 		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
 			game.livesRemaining--;
