@@ -37,7 +37,8 @@ public class LivesRemainingScreen implements Screen {
 		table.center();
 		table.setFillParent(true);
 		
-		livesRemainingString = Integer.toString(game.livesRemaining);
+		livesRemainingString = Integer.toString(game.livesRemaining) + " LIVES REMAINING.";
+		
 		level = new Label("DEMO LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 		livesRemaining = new Label(livesRemainingString, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 		
@@ -59,7 +60,7 @@ public class LivesRemainingScreen implements Screen {
 		
 		timeElapsed += delta;
 		
-		if(timeElapsed > 3)
+		if(timeElapsed > 2f)
 			game.setScreen(new GameScreen(game));
 		
 		game.batch.setProjectionMatrix(stage.getCamera().combined);

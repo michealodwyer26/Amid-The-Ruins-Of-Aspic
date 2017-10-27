@@ -26,6 +26,7 @@ public class MainMenuScreen implements Screen {
 		
 	public MainMenuScreen(Platformer game) {
 		this.game = game;
+		game.livesRemaining = 3;
 		
 		viewport = new FitViewport(Platformer.V_WIDTH, Platformer.V_HEIGHT, new OrthographicCamera());
 		stage = new Stage(viewport, game.batch);
@@ -54,7 +55,7 @@ public class MainMenuScreen implements Screen {
 	
 	private void handleInput() {
 		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-			game.setScreen(new GameScreen(game));
+			game.setScreen(new LivesRemainingScreen(game));
 		}
 	}
 

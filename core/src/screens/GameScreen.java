@@ -100,15 +100,13 @@ public class GameScreen implements Screen {
 		world.step(timeStep, velocityIterations, positionsInterations);
 		
 		gary.update(delta);
-		
-		System.out.println(gary.jumpsLeft);
-		
+				
 		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
 			game.livesRemaining--;
 			
 			if(game.livesRemaining >= 0)
 				game.setScreen(new LivesRemainingScreen(game));
-			else
+			else 
 				game.setScreen(new GameOverScreen(game));
 		}
 		

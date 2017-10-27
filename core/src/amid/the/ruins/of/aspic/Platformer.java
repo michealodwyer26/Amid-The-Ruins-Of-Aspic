@@ -28,9 +28,7 @@ public class Platformer extends Game {
 	
 	@Override
 	public void create () {
-		this.batch = new SpriteBatch();
-		livesRemaining = 3;
-		
+		this.batch = new SpriteBatch();		
 		this.setScreen(new MainMenuScreen(this));
 	}
 
