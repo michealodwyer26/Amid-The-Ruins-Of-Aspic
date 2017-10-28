@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -47,6 +48,9 @@ public class Gary extends Sprite {
 	public final Vector2 weakerJumpImpulse = new Vector2(0, 2f);
 	public final Vector2 runRightImpulse = new Vector2(0.1f, 0);
 	public final Vector2 runLeftImpulse = new Vector2(-0.1f, 0);
+	
+	private final float rectWidth = 23f;
+	private final float rectHeight = 32f;
 		
 	private Animation<TextureRegion> jumpAnimation;
 	private Animation<TextureRegion> runAnimation;
@@ -168,17 +172,20 @@ public class Gary extends Sprite {
 		
 		defineGary();
 		standFrame = new TextureRegion(getTexture(), 13, 4, 16, 35);
-		setBounds(13, 4, 16 / Platformer.PPM, 35 / Platformer.PPM);
+		setBounds(0, 0, 16 / Platformer.PPM, 35 / Platformer.PPM);
 		setRegion(standFrame);
 	}
 	
 	public void update(float dt) {
 		TextureRegion currentFrame = getFrame(dt);
+
 		
 		if(currentFrame.isFlipX()) {
-			setPosition(b2body.getPosition().x - (currentFrame.getRegionWidth() / Platformer.PPM) + b2body.getFixtureList().get(0).getShape().getRadius(), b2body.getPosition().y - getHeight() / 2);
+			setPosition(b2body.getPosition().x - (currentFrame.getRegionWidth() / Platformer.PPM)+ (rectWidth / 2 / Platformer.PPM), 
+						b2body.getPosition().y - (rectHeight / 2 / Platformer.PPM));
 		} else {
-			setPosition(b2body.getPosition().x, b2body.getPosition().y - b2body.getFixtureList().get(0).getShape().getRadius());
+			setPosition(b2body.getPosition().x - (rectWidth / 2 / Platformer.PPM), 
+						b2body.getPosition().y - (rectHeight / 2 / Platformer.PPM));
 		}
 		
 		
@@ -288,8 +295,8 @@ public class Gary extends Sprite {
 	public void updateWhipLineSegment(EdgeShape whipLineSegment, float dt) {
 		if(!region.isFlipX()) {
 
-			if(isStandingWhipping && (whipX < 70f / Platformer.PPM)) {
-				whipLineSegment.set(0f, 0f, whipX += 1.6f / Platformer.PPM, 0f);
+			if(isStandingWhipping && (whipX < 40f / Platformer.PPM)) {
+				whipLineSegment.set(0f, 0f, whipX += 1.1f / Platformer.PPM, 0f);
 			} else {
 				if(whipX > 0f) {
 					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
@@ -298,8 +305,8 @@ public class Gary extends Sprite {
 		}
 		
 		else {
-			if(isStandingWhipping && (whipX > 0f - (55f / Platformer.PPM))) {
-				whipLineSegment.set(0f, 0f, whipX -= 1.2f / Platformer.PPM, 0f);
+			if(isStandingWhipping && (whipX > 0f - (40f / Platformer.PPM))) {
+				whipLineSegment.set(0f, 0f, whipX -= 1.1f / Platformer.PPM, 0f);
 			} else {
 				if(whipX < 0f) {
 					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
@@ -322,8 +329,8 @@ public class Gary extends Sprite {
 		FixtureDef fdef = new FixtureDef();
 		fdef.friction = FRICTION;
 		
-		CircleShape shape = new CircleShape();
-		shape.setRadius(RADIUS / Platformer.PPM);
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(rectWidth / 2 / Platformer.PPM, rectHeight/ 2 / Platformer.PPM);
 		
 		fdef.shape = shape;
 		
