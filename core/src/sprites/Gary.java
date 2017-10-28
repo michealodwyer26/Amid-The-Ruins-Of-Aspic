@@ -6,10 +6,15 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
@@ -42,7 +47,7 @@ public class Gary extends Sprite {
 	public final Vector2 weakerJumpImpulse = new Vector2(0, 2f);
 	public final Vector2 runRightImpulse = new Vector2(0.1f, 0);
 	public final Vector2 runLeftImpulse = new Vector2(-0.1f, 0);
-	
+		
 	private Animation<TextureRegion> jumpAnimation;
 	private Animation<TextureRegion> runAnimation;
 	private Animation<TextureRegion> fallAnimation;
@@ -54,6 +59,9 @@ public class Gary extends Sprite {
 	private float stateTimer;
 	private boolean runningRight;
 	
+	private TextureRegion region;
+	
+	private float whipX = 0;
 	
 	public Gary(World world) {
 		super(spriteSheet);
@@ -185,13 +193,17 @@ public class Gary extends Sprite {
 		if(landAnimation.isAnimationFinished(stateTimer) && isLanding) {
 			isLanding = false;
 		}
+		
+		EdgeShape whipLineSegment = b2body.getFixtureList().peek().getUserData() == "whipLineSegment" ? 
+				(EdgeShape) b2body.getFixtureList().peek().getShape() : (EdgeShape)  b2body.getFixtureList().get(1).getShape();
+		
+		updateWhipLineSegment(whipLineSegment, dt);
+		
 	}
 	
 	private TextureRegion getFrame(float dt) {
 		currentState = getState();
-		
-		
-		TextureRegion region;
+
 		switch(currentState) {
 			case RUNNING:
 				region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
@@ -264,6 +276,39 @@ public class Gary extends Sprite {
 		return State.STANDING;
 	}
 	
+
+	
+	public void createWhipFixture() {
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = new EdgeShape();
+		b2body.createFixture(fdef).setUserData("whipLineSegment");
+		
+	}
+	
+	public void updateWhipLineSegment(EdgeShape whipLineSegment, float dt) {
+		if(!region.isFlipX()) {
+
+			if(isStandingWhipping && (whipX < 70f / Platformer.PPM)) {
+				whipLineSegment.set(0f, 0f, whipX += 1.6f / Platformer.PPM, 0f);
+			} else {
+				if(whipX > 0f) {
+					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
+				}
+			}
+		}
+		
+		else {
+			if(isStandingWhipping && (whipX > 0f - (55f / Platformer.PPM))) {
+				whipLineSegment.set(0f, 0f, whipX -= 1.2f / Platformer.PPM, 0f);
+			} else {
+				if(whipX < 0f) {
+					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
+				}
+			}
+		}
+	}
+
+	
 	public void defineGary() {
 		float startX = (STARTING_TILE_X * Platformer.TILE_SIZE) / Platformer.PPM;
 		float startY = (STARTING_TILE_Y * Platformer.TILE_SIZE) / Platformer.PPM;
@@ -283,5 +328,7 @@ public class Gary extends Sprite {
 		fdef.shape = shape;
 		
 		b2body.createFixture(fdef).setUserData(this);
+		
+		createWhipFixture();
 	}
 }
