@@ -41,15 +41,18 @@ public class B2WorldCreator {
 		for(MapObject object : tiledMap.getLayers().get("Enemies").getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle rect = ((RectangleMapObject) object).getRectangle();
 			
-			bdef.type = BodyDef.BodyType.StaticBody;
+			bdef.type = BodyDef.BodyType.DynamicBody;
 			bdef.position.set((rect.getX() + rect.getWidth()/2) / Platformer.PPM, (rect.getY() + rect.getHeight()/2) / Platformer.PPM);
 			
 			body = world.createBody(bdef);
+			body.setUserData("enemyBody");
+			
+			System.out.println(body);
 			
 			shape.setAsBox(rect.getWidth() / 2 / Platformer.PPM, rect.getHeight() / 2 / Platformer.PPM);
 			fdef.shape = shape; 
 			
-			body.createFixture(fdef).setUserData("enemy");
+			body.createFixture(fdef).setUserData("enemyFixture");
 		}
 	}
 }

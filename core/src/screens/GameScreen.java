@@ -2,6 +2,7 @@ package screens;
 
 import amid.the.ruins.of.aspic.Platformer;
 import sprites.Gary;
+import sprites.ZombieSoldier;
 import tools.B2WorldCreator;
 import tools.WorldContactListener;
 
@@ -13,8 +14,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -34,7 +37,10 @@ public class GameScreen implements Screen {
 	private final int positionsInterations = 2;
 	
 	private Gary gary;
-	
+
+	private Array<ZombieSoldier> zombieSoldiers = new Array<ZombieSoldier>();
+
+
 	public GameScreen(Platformer game) {		
 		this.game = game;
 		
@@ -52,6 +58,15 @@ public class GameScreen implements Screen {
 		b2dr.SHAPE_STATIC.set(1, 0, 0, 1);
 		
 		new B2WorldCreator(world, map);
+		
+		Array<Body> bodies = new Array<Body>();
+		world.getBodies(bodies);
+		
+		for(Body body : bodies) {
+			if(body.getUserData() == "enemyBody")
+				zombieSoldiers.add(new ZombieSoldier(world, body));
+				
+		}
 		
 		world.setContactListener(new WorldContactListener());
 		
@@ -90,8 +105,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		gamecam.update();
-
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -100,6 +113,11 @@ public class GameScreen implements Screen {
 		world.step(timeStep, velocityIterations, positionsInterations);
 		
 		gary.update(delta);
+		
+		for(ZombieSoldier zomSold : zombieSoldiers) {
+			zomSold.update(delta);
+		}
+		
 				
 		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
 			game.livesRemaining--;
@@ -111,11 +129,12 @@ public class GameScreen implements Screen {
 		}
 		
 		gamecam.position.x = gary.b2body.getPosition().x;
+		gamecam.update();
 		
 		mapRenderer.setView(gamecam);
 		mapRenderer.render();
 		
-		//b2dr.render(world, gamecam.combined);
+		b2dr.render(world, gamecam.combined);
 		
 		game.batch.setProjectionMatrix(gamecam.combined);
 		game.batch.begin();
