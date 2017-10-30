@@ -72,7 +72,8 @@ public class ZombieSoldier extends Sprite {
 		}
 		
 		if(b2body.getLinearVelocity().x >= -MAX_SPEED) {
-			b2body.applyLinearImpulse(walkImpulse, b2body.getWorldCenter(), true);
+			if(!isDying)
+				b2body.applyLinearImpulse(walkImpulse, b2body.getWorldCenter(), true);
 		}
 	}
 	
@@ -99,16 +100,17 @@ public class ZombieSoldier extends Sprite {
 	}
 	
 	private State getState() {
-		if(b2body.getLinearVelocity().x > 0)
-			return State.WALKING;
 		if(isDying)
 			return State.DYING;
+		
+		if(b2body.getLinearVelocity().x > 0)
+			return State.WALKING;
 		
 		return State.WALKING;
 	}
 	
 	public void defineZombieSoldier() {
-		
+		b2body.getFixtureList().get(0).setUserData(this);
 	}
 	
 	public void loadAnimations() {
@@ -130,7 +132,9 @@ public class ZombieSoldier extends Sprite {
 		
 		dyingAnimation = new Animation<TextureRegion>(0.1f, frames);
 		frames.clear();
-		
-
+	}
+	
+	public Body getBody() {
+		return b2body;
 	}
 }

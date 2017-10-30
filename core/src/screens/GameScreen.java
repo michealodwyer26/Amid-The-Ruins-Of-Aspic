@@ -114,9 +114,20 @@ public class GameScreen implements Screen {
 		
 		gary.update(delta);
 		
+		Array<ZombieSoldier> zombsToRemove = new Array<ZombieSoldier>();
+		
 		for(ZombieSoldier zomSold : zombieSoldiers) {
-			zomSold.update(delta);
+			if(zomSold.isDead) {
+				zombsToRemove.add(zomSold);
+				world.destroyBody(zomSold.getBody());
+			}
+			else
+				zomSold.update(delta);
 		}
+		
+		zombieSoldiers.removeAll(zombsToRemove, false);
+		
+		
 		
 				
 		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
