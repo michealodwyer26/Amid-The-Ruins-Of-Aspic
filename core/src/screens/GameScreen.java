@@ -128,8 +128,6 @@ public class GameScreen implements Screen {
 		zombieSoldiers.removeAll(zombsToRemove, false);
 		
 		
-		
-				
 		if(gary.b2body.getPosition().y < (-100 / Platformer.PPM)) {
 			game.livesRemaining--;
 			
@@ -145,7 +143,7 @@ public class GameScreen implements Screen {
 		mapRenderer.setView(gamecam);
 		mapRenderer.render();
 		
-		b2dr.render(world, gamecam.combined);
+		//b2dr.render(world, gamecam.combined);
 		
 		game.batch.setProjectionMatrix(gamecam.combined);
 		game.batch.begin();
