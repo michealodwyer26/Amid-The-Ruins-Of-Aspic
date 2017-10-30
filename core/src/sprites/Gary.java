@@ -33,13 +33,11 @@ public class Gary extends Sprite {
 	public boolean isLanding = false;
 	public int jumpsLeft = 2;
 	
-	private TextureRegion standFrame;
-	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/betterGaryAnimationFrames.png"));
+	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/garyAnimationFrames.png"));
 	
 	public final float MAX_SPEED = 1.5f;
 	
 	private final float FRICTION = 0.1f;
-	private final int RADIUS = 18;
 	
 	private final int STARTING_TILE_X = 8;
 	private final int STARTING_TILE_Y = 30;
@@ -60,12 +58,14 @@ public class Gary extends Sprite {
 	private Animation<TextureRegion> idleAnimation;
 	private Animation<TextureRegion> landAnimation;
 
-	private float stateTimer;
-	private boolean runningRight;
+	private float stateTimer = 0;
+	private boolean runningRight= true;
 	
 	private TextureRegion region;
 	
-	private float whipX = 0;
+	private float whipLineSegmentX = 0;
+	private final float maxWhipLineSegmentX = 40f;
+	private final float whipLineSegmentSpeed = 1.1f;
 	
 	public Gary(World world) {
 		super(spriteSheet);
@@ -74,8 +74,6 @@ public class Gary extends Sprite {
 		
 		currentState = State.STANDING;
 		previousState = State.STANDING;
-		stateTimer = 0;
-		runningRight = true;
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		
@@ -171,9 +169,7 @@ public class Gary extends Sprite {
 		frames.clear();
 		
 		defineGary();
-		standFrame = new TextureRegion(getTexture(), 13, 4, 16, 35);
 		setBounds(0, 0, 16 / Platformer.PPM, 35 / Platformer.PPM);
-		setRegion(standFrame);
 	}
 	
 	public void update(float dt) {
@@ -295,21 +291,21 @@ public class Gary extends Sprite {
 	public void updateWhipLineSegment(EdgeShape whipLineSegment, float dt) {
 		if(!region.isFlipX()) {
 
-			if(isStandingWhipping && (whipX < 40f / Platformer.PPM)) {
-				whipLineSegment.set(0f, 0f, whipX += 1.1f / Platformer.PPM, 0f);
+			if(isStandingWhipping && (whipLineSegmentX < maxWhipLineSegmentX / Platformer.PPM)) {
+				whipLineSegment.set(0f, 0f, whipLineSegmentX += whipLineSegmentSpeed / Platformer.PPM, 0f);
 			} else {
-				if(whipX > 0f) {
-					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
+				if(whipLineSegmentX > 0f) {
+					whipLineSegment.set(0f, 0f, whipLineSegmentX = 0f, 0f);
 				}
 			}
 		}
 		
 		else {
-			if(isStandingWhipping && (whipX > 0f - (40f / Platformer.PPM))) {
-				whipLineSegment.set(0f, 0f, whipX -= 1.1f / Platformer.PPM, 0f);
+			if(isStandingWhipping && (whipLineSegmentX > 0f - (maxWhipLineSegmentX / Platformer.PPM))) {
+				whipLineSegment.set(0f, 0f, whipLineSegmentX -= whipLineSegmentSpeed / Platformer.PPM, 0f);
 			} else {
-				if(whipX < 0f) {
-					whipLineSegment.set(0f, 0f, whipX = 0f / Platformer.PPM, 0f);
+				if(whipLineSegmentX < 0f) {
+					whipLineSegment.set(0f, 0f, whipLineSegmentX = 0f, 0f);
 				}
 			}
 		}
