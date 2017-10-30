@@ -139,6 +139,11 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(gamecam.combined);
 		game.batch.begin();
 		gary.draw(game.batch);
+		
+		for(ZombieSoldier zomSold : zombieSoldiers) {
+			zomSold.draw(game.batch);
+		}
+		
 		game.batch.end();
 		
 	}

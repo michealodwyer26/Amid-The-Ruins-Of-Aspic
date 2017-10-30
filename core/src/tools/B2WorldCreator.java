@@ -46,9 +46,7 @@ public class B2WorldCreator {
 			
 			body = world.createBody(bdef);
 			body.setUserData("enemyBody");
-			
-			System.out.println(body);
-			
+						
 			shape.setAsBox(rect.getWidth() / 2 / Platformer.PPM, rect.getHeight() / 2 / Platformer.PPM);
 			fdef.shape = shape; 
 			
