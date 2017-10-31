@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -26,9 +27,11 @@ public class GameScreen implements Screen {
 	private Platformer game;
 	private TiledMap map;
 	private OrthographicCamera gamecam;
+	private OrthographicCamera hudCam;
 	private OrthogonalTiledMapRenderer mapRenderer;
 	private Viewport gamePort;
-	
+
+	private Texture heart;
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
@@ -47,9 +50,14 @@ public class GameScreen implements Screen {
 		gamecam = new OrthographicCamera();
 		gamePort = new FitViewport(Platformer.V_WIDTH / Platformer.PPM, Platformer.V_HEIGHT / Platformer.PPM, gamecam);
 		
+		hudCam = new OrthographicCamera();
+		hudCam.setToOrtho(false, Platformer.V_WIDTH, Platformer.V_HEIGHT);
+
+		heart = new Texture(Gdx.files.internal("data/heartIcon.png"));
+		
 		map = new TmxMapLoader().load("data/ruinsOfAspic.tmx");
 		mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / Platformer.PPM);
-
+		
 		gamecam.position.set(Platformer.startCamPos);
 
 		world = new World(Platformer.GRAVITY, true);
@@ -139,7 +147,7 @@ public class GameScreen implements Screen {
 		
 		gamecam.position.x = gary.b2body.getPosition().x;
 		gamecam.update();
-		
+
 		mapRenderer.setView(gamecam);
 		mapRenderer.render();
 		
@@ -155,9 +163,15 @@ public class GameScreen implements Screen {
 		
 		game.batch.end();
 		
+		game.batch.setProjectionMatrix(hudCam.combined);
+		
+		game.batch.begin();
+		for(int i = 5; i <= 45; i += 15)
+			game.batch.draw(heart, i, hudCam.viewportHeight - 15);
+		game.batch.end();
 	}
 
-	@Override
+	@Override 
 	public void resize(int width, int height) {
 		gamePort.update(width, height);
 	}

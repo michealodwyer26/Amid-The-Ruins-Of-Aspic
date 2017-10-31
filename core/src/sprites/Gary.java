@@ -61,6 +61,8 @@ public class Gary extends Sprite {
 	private float stateTimer = 0;
 	private boolean runningRight= true;
 	
+	public int health = 20;
+	
 	private TextureRegion region;
 	
 	private float whipLineSegmentX = 0;
