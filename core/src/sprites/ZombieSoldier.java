@@ -72,7 +72,7 @@ public class ZombieSoldier extends Sprite {
 		setPosition(b2body.getPosition().x - (rectWidth / 2 / Platformer.PPM),
 					b2body.getPosition().y - (rectHeight / 2 / Platformer.PPM));
 		
-		if(dyingAnimation.isAnimationFinished(stateTimer) && isDying) {
+		if(dyingAnimation.isAnimationFinished(stateTimer) && isDying && currentState == State.DYING) {
 			isDead = true;
 		}
 		
@@ -81,15 +81,11 @@ public class ZombieSoldier extends Sprite {
 				b2body.applyLinearImpulse(walkImpulse, b2body.getWorldCenter(), true);
 		}
 		
-		if(isStabbing) {
-			if(stabAnimation.isAnimationFinished(stateTimer)) {
-				isStabbing = false;
-				System.out.println("2");
-			}
+		if(stabAnimation.isAnimationFinished(stateTimer) && isStabbing || isDying && currentState == State.STABBING) {
+			isStabbing = false;
 		}
 		
 		if(stateTimer > 3f) {
-			System.out.println("1");
 			isStabbing = true;
 		}
 	}
@@ -121,11 +117,12 @@ public class ZombieSoldier extends Sprite {
 	}
 	
 	private State getState() {
+		if(isDying)
+			return State.DYING;
+		
 		if(isStabbing) {
 			return State.STABBING;
 		}
-		if(isDying)
-			return State.DYING;
 		
 		if(b2body.getLinearVelocity().x > 0)
 			return State.WALKING;

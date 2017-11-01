@@ -1,21 +1,17 @@
 package sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
@@ -66,8 +62,8 @@ public class Gary extends Sprite {
 	private TextureRegion region;
 	
 	private float whipLineSegmentX = 0;
-	private final float maxWhipLineSegmentX = 40f;
-	private final float whipLineSegmentSpeed = 1.1f;
+	private final float maxWhipLineSegmentX = 55f;
+	private final float whipLineSegmentSpeed = 1.2f;
 	
 	public Gary(World world) {
 		super(spriteSheet);
@@ -269,7 +265,8 @@ public class Gary extends Sprite {
 		else if(b2body.getLinearVelocity().y < 0)
 			return State.FALLING;
 
-		else if(b2body.getLinearVelocity().x != 0 && b2body.getLinearVelocity().y == 0)
+		else if(b2body.getLinearVelocity().x != 0 && b2body.getLinearVelocity().y == 0 && 
+				(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.LEFT)))
 			return State.RUNNING;
 		
 		else if(b2body.getLinearVelocity().x == 0 && b2body.getLinearVelocity().y == 0)

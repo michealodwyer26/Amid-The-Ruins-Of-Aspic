@@ -26,13 +26,6 @@ public class WorldContactListener implements ContactListener {
 			}
 		}
 		
-//		if(fixA.getUserData().equals("whipLineSegment") || fixB.getUserData().equals("whipLineSegment")) {
-//			Fixture whipLineSegment = fixA.getUserData().equals("whipLineSegment") ? fixA : fixB;
-//			
-//			ZombieSoldier zomSold = (ZombieSoldier) fixB.getUserData();
-//			zomSold.isDying = true;
-//		}
-		
 		if(fixA.getUserData() instanceof ZombieSoldier || fixB.getUserData() instanceof ZombieSoldier) {
 			if(fixA.getUserData().equals("whipLineSegment") || fixB.getUserData().equals("whipLineSegment")) {
 				Fixture zombieFix = fixA.getUserData() instanceof ZombieSoldier ? fixA : fixB;
