@@ -166,8 +166,8 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(hudCam.combined);
 		
 		game.batch.begin();
-		for(int i = 5; i <= 45; i += 15)
-			game.batch.draw(heart, i, hudCam.viewportHeight - 15);
+		for(int i = 0; i < gary.health; i++)
+			game.batch.draw(heart, i * 15 + 5, hudCam.viewportHeight - 15);
 		game.batch.end();
 	}
 

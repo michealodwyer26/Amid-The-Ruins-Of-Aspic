@@ -15,13 +15,16 @@ import amid.the.ruins.of.aspic.Platformer;
 
 public class ZombieSoldier extends Sprite {
 
-	public enum State { WALKING, DYING };
+	public enum State { WALKING, STABBING, DYING };
 	
 	public State currentState;
 	public State previousState;
 	private TextureRegion currentFrame;
+	
 	public boolean isDying;
 	public boolean isDead;
+	public boolean isStabbing;
+	
 	private final float MAX_SPEED = 0.3f;
 	private final Vector2 walkImpulse = new Vector2(-0.1f, 0);
 	private float stateTimer;
@@ -30,11 +33,13 @@ public class ZombieSoldier extends Sprite {
 	private final float rectHeight;
 	
 	private Platformer game;
+	
 	private static Texture spriteSheet = new Texture(Gdx.files.internal("data/zombieSoldierFrames.png"));
 	
 	private Animation<TextureRegion> walkAnimation;
 	private Animation<TextureRegion> dyingAnimation;
-	
+	private Animation<TextureRegion> stabAnimation;
+
 	private Body b2body;
 	
 	private World world;
@@ -75,6 +80,18 @@ public class ZombieSoldier extends Sprite {
 			if(!isDying)
 				b2body.applyLinearImpulse(walkImpulse, b2body.getWorldCenter(), true);
 		}
+		
+		if(isStabbing) {
+			if(stabAnimation.isAnimationFinished(stateTimer)) {
+				isStabbing = false;
+				System.out.println("2");
+			}
+		}
+		
+		if(stateTimer > 3f) {
+			System.out.println("1");
+			isStabbing = true;
+		}
 	}
 	
 	private TextureRegion getFrame(float dt) {
@@ -83,14 +100,18 @@ public class ZombieSoldier extends Sprite {
 		TextureRegion region;
 		
 		switch(currentState) {
-		
+			
+			case DYING:
+				region = (TextureRegion) dyingAnimation.getKeyFrame(stateTimer, false);
+				break;
+				
+			case STABBING:
+				region = (TextureRegion) stabAnimation.getKeyFrame(stateTimer, true);
+				break;
+				
 			default:
 			case WALKING:
 				region = (TextureRegion) walkAnimation.getKeyFrame(stateTimer, true);
-				break;
-				
-			case DYING:
-				region = (TextureRegion) dyingAnimation.getKeyFrame(stateTimer, false);
 				break;
 		}
 		
@@ -100,6 +121,9 @@ public class ZombieSoldier extends Sprite {
 	}
 	
 	private State getState() {
+		if(isStabbing) {
+			return State.STABBING;
+		}
 		if(isDying)
 			return State.DYING;
 		
@@ -132,6 +156,16 @@ public class ZombieSoldier extends Sprite {
 		
 		dyingAnimation = new Animation<TextureRegion>(0.1f, frames);
 		frames.clear();
+		
+		frames.add(new TextureRegion(getTexture(), 72, 155, 28, 33));
+		frames.add(new TextureRegion(getTexture(), 101, 155, 33, 33));
+		frames.add(new TextureRegion(getTexture(), 135, 155, 35, 33));
+		frames.add(new TextureRegion(getTexture(), 171, 155, 28, 33));
+		
+		stabAnimation = new Animation<TextureRegion>(.3f, frames);
+		frames.clear();
+		
+		
 	}
 	
 	public Body getBody() {
