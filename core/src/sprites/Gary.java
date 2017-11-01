@@ -195,6 +195,13 @@ public class Gary extends Sprite {
 			isLanding = false;
 		}
 		
+
+		if(currentState == State.STOPPING) {
+			b2body.getFixtureList().get(0).setFriction(1.0f);
+		} else {
+			b2body.getFixtureList().get(0).setFriction(FRICTION);
+		}
+		
 		EdgeShape whipLineSegment = b2body.getFixtureList().peek().getUserData() == "whipLineSegment" ? 
 				(EdgeShape) b2body.getFixtureList().peek().getShape() : (EdgeShape)  b2body.getFixtureList().get(1).getShape();
 		

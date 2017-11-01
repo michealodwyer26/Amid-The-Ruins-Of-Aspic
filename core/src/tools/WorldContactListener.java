@@ -1,5 +1,6 @@
 package tools;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -32,6 +33,23 @@ public class WorldContactListener implements ContactListener {
 				
 				ZombieSoldier zomSold = (ZombieSoldier) zombieFix.getUserData();
 				zomSold.isDying = true;
+			}
+		}
+		
+		if(fixA.getUserData() instanceof ZombieSoldier || fixB.getUserData() instanceof ZombieSoldier) {
+			if(fixA.getUserData() instanceof Gary || fixB.getUserData() instanceof Gary) {
+				Fixture zombieSoldFix = fixA.getUserData() instanceof ZombieSoldier ? fixA : fixB;
+
+				ZombieSoldier zomSold = (ZombieSoldier) zombieSoldFix.getUserData();
+				
+				if(zomSold.currentState == ZombieSoldier.State.STABBING) {
+					Fixture garyFix = fixA.getUserData() instanceof Gary ? fixA : fixB;
+					
+					Gary gary = (Gary) garyFix.getUserData();
+					gary.health--;
+					
+					gary.b2body.applyLinearImpulse(new Vector2(-1.3f, 1f), gary.b2body.getWorldCenter(), true);
+				}
 			}
 		}
 	}

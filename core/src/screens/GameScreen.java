@@ -170,6 +170,14 @@ public class GameScreen implements Screen {
 		for(int i = 0; i < gary.health; i++)
 			game.batch.draw(heart, i * 15 + 5, hudCam.viewportHeight - 15);
 		game.batch.end();
+		
+		if(gary.health <= 0) {
+			game.livesRemaining--;
+			if(game.livesRemaining <= 0)
+				game.setScreen(new GameOverScreen(game));
+			else
+				game.setScreen(new LivesRemainingScreen(game));
+		}
 	}
 
 	@Override 

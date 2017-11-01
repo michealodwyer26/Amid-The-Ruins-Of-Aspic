@@ -142,7 +142,7 @@ public class ZombieSoldier extends Sprite {
 		frames.add(new TextureRegion(getTexture(), 151, 10, 24, 33));
 		frames.add(new TextureRegion(getTexture(), 176, 10, 27, 33));
 		
-		walkAnimation = new Animation<TextureRegion>(0.3f, frames);
+		walkAnimation = new Animation<TextureRegion>(0.15f, frames);
 		frames.clear();
 		
 		frames.add(new TextureRegion(getTexture(), 110, 199, 49, 38));
