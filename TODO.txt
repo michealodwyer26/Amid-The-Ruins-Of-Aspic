@@ -1,7 +1,3 @@
 A simple list of additions I want to make to the game.
 
-1. Add in camera boundaries and let Gary walk to the edge of the map whilst the camera stays still.
-
-2. Better Main Menu screen.
-
-3. An NPC at the end with a simple dialogue system.
+1. Better Main Menu screen.

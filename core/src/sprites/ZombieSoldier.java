@@ -28,6 +28,7 @@ public class ZombieSoldier extends Sprite {
 	private final float MAX_SPEED = 0.3f;
 	private final Vector2 walkImpulse = new Vector2(-0.1f, 0);
 	private float stateTimer;
+	private final float TIME_BETWEEN_STABS = 1.5f;
 	
 	private final float rectWidth;
 	private final float rectHeight;
@@ -85,7 +86,7 @@ public class ZombieSoldier extends Sprite {
 			isStabbing = false;
 		}
 		
-		if(stateTimer > 3f) {
+		if(stateTimer > TIME_BETWEEN_STABS) {
 			isStabbing = true;
 		}
 	}
@@ -116,7 +117,7 @@ public class ZombieSoldier extends Sprite {
 		return region;
 	}
 	
-	private State getState() {
+	public State getState() {
 		if(isDying)
 			return State.DYING;
 		

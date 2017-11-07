@@ -145,7 +145,15 @@ public class GameScreen implements Screen {
 				game.setScreen(new GameOverScreen(game));
 		}
 		
+		
 		gamecam.position.x = gary.b2body.getPosition().x;
+		
+		if(gamecam.position.x < gamecam.viewportWidth / 2) {
+			gamecam.position.x = gamecam.viewportWidth / 2;
+		} else if (gamecam.position.x > 14f){
+			gamecam.position.x = 14f;
+		}
+		
 		gamecam.update();
 
 		mapRenderer.setView(gamecam);

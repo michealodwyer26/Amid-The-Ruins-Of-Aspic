@@ -17,6 +17,7 @@ public class WorldContactListener implements ContactListener {
 		Fixture fixA = contact.getFixtureA();
 		Fixture fixB = contact.getFixtureB();
 		
+		// Handling Gary's ground collisions
 		if(fixA.getUserData() instanceof Gary || fixB.getUserData() instanceof Gary) {
 			if(fixA.getUserData().equals("ground") || fixB.getUserData().equals("ground")){
 				Fixture garyFixture = fixA.getUserData() instanceof Gary ? fixA : fixB;
@@ -27,6 +28,7 @@ public class WorldContactListener implements ContactListener {
 			}
 		}
 		
+		// Handling Gary's attacks on Zombie Soldiers with his whip
 		if(fixA.getUserData() instanceof ZombieSoldier || fixB.getUserData() instanceof ZombieSoldier) {
 			if(fixA.getUserData().equals("whipLineSegment") || fixB.getUserData().equals("whipLineSegment")) {
 				Fixture zombieFix = fixA.getUserData() instanceof ZombieSoldier ? fixA : fixB;
@@ -36,6 +38,7 @@ public class WorldContactListener implements ContactListener {
 			}
 		}
 		
+		// Handle the Zombie Soldier's attacks on Gary
 		if(fixA.getUserData() instanceof ZombieSoldier || fixB.getUserData() instanceof ZombieSoldier) {
 			if(fixA.getUserData() instanceof Gary || fixB.getUserData() instanceof Gary) {
 				Fixture zombieSoldFix = fixA.getUserData() instanceof ZombieSoldier ? fixA : fixB;
@@ -49,6 +52,18 @@ public class WorldContactListener implements ContactListener {
 					gary.health--;
 					
 					gary.b2body.applyLinearImpulse(new Vector2(-1.3f, 1f), gary.b2body.getWorldCenter(), true);
+				}
+			}
+		}
+		
+		// Handling when Gary collides with a Zombie Soldier with no one attacking
+		if(fixA.getUserData() instanceof ZombieSoldier || fixB.getUserData() instanceof ZombieSoldier) {
+			if(fixA.getUserData() instanceof Gary || fixB.getUserData() instanceof Gary) {
+				Fixture zombieSoldFix = fixA.getUserData() instanceof ZombieSoldier ? fixA : fixB;
+				ZombieSoldier zomSold = (ZombieSoldier) zombieSoldFix.getUserData();
+				
+				if(!(zomSold.currentState == ZombieSoldier.State.STABBING)) {
+					zomSold.isStabbing = true;
 				}
 			}
 		}
