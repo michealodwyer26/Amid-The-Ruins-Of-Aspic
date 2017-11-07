@@ -35,9 +35,9 @@ public class MainMenuScreen implements Screen {
 		table.center();
 		table.setFillParent(true);
 		
-		text = new Label("PRESS ENTER", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		instruction1 = new Label("MOVE WITH THE ARROW KEYS", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		instruction2 = new Label("PRESS W TO WHIP, PRESS SPACE TO JUMP", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+		text = new Label("PRESS ENTER", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		instruction1 = new Label("MOVE WITH THE ARROW KEYS", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		instruction2 = new Label("PRESS W TO WHIP, PRESS SPACE TO JUMP", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		
 		table.add(text).expandX();
 		table.row();

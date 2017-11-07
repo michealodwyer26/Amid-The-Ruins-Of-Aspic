@@ -39,8 +39,8 @@ public class LivesRemainingScreen implements Screen {
 		
 		livesRemainingString = Integer.toString(game.livesRemaining) + " LIVES REMAINING.";
 		
-		level = new Label("DEMO LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		livesRemaining = new Label(livesRemainingString, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+		level = new Label("DEMO LEVEL", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		livesRemaining = new Label(livesRemainingString, new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		
 		table.add(level).expandX();
 		table.row();

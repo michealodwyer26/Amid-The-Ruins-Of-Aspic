@@ -34,7 +34,7 @@ public class GameOverScreen implements Screen {
 		table.center();
 		table.setFillParent(true);
 		
-		gameOver = new Label("GAME OVER", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+		gameOver = new Label("GAME OVER", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		
 		table.add(gameOver).expandX();
 		

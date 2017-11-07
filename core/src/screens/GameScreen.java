@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
 	private final float timeStep = 1 / 60f;
 	private final int velocityIterations = 6;
 	private final int positionsInterations = 2;
+	private final float maxCamX = 14f;
 	
 	private Gary gary;
 
@@ -150,8 +151,8 @@ public class GameScreen implements Screen {
 		
 		if(gamecam.position.x < gamecam.viewportWidth / 2) {
 			gamecam.position.x = gamecam.viewportWidth / 2;
-		} else if (gamecam.position.x > 14f){
-			gamecam.position.x = 14f;
+		} else if (gamecam.position.x > maxCamX){
+			gamecam.position.x = maxCamX;
 		}
 		
 		gamecam.update();
