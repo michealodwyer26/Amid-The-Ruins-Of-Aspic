@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,7 +23,11 @@ public class MainMenuScreen implements Screen {
 	private Platformer game;
 	private Viewport viewport;
 	private Stage stage;
-		
+	private OrthogonalTiledMapRenderer mapRenderer;
+	private TiledMap map;
+	private OrthographicCamera tileCam;
+
+
 	public MainMenuScreen(Platformer game) {
 		this.game = game;
 		game.livesRemaining = 3;
@@ -54,6 +61,12 @@ public class MainMenuScreen implements Screen {
 		
 		stage.addActor(titleTable);
 		stage.addActor(table);
+	
+		map = new TmxMapLoader().load("data/ruinsOfAspic.tmx");
+		mapRenderer = new OrthogonalTiledMapRenderer(map);
+		tileCam = new OrthographicCamera(Platformer.V_WIDTH, Platformer.V_HEIGHT);
+		
+		tileCam.position.set((25 * Platformer.TILE_SIZE), (34 * Platformer.TILE_SIZE), 0);
 	}
 	
 	@Override
@@ -76,8 +89,15 @@ public class MainMenuScreen implements Screen {
 		
 		handleInput();
 		
+		tileCam.position.x += delta * 15;
+		tileCam.update();
+		
+		mapRenderer.setView(tileCam);
+		mapRenderer.render();
+		
 		game.batch.setProjectionMatrix(stage.getCamera().combined);
 		stage.draw();
+		
 	}
 
 	@Override
