@@ -20,10 +20,6 @@ public class MainMenuScreen implements Screen {
 	private Platformer game;
 	private Viewport viewport;
 	private Stage stage;
-	Label text;
-	Label instruction1;
-	Label instruction2;
-	Label title;
 		
 	public MainMenuScreen(Platformer game) {
 		this.game = game;
@@ -41,23 +37,19 @@ public class MainMenuScreen implements Screen {
 		//table.setDebug(true);
 
 				
-		title = new Label("AMID THE RUINS OF ASPIC", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
-		text = new Label("PRESS ENTER", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
-		instruction1 = new Label("MOVE WITH THE ARROW KEYS", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
-		instruction2 = new Label("PRESS W TO WHIP, PRESS SPACE TO JUMP", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		Label title = new Label("AMID THE RUINS OF ASPIC", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		Label playLabel = new Label("1 - PLAY", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
+		Label quitLabel = new Label("2 - QUIT", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		
 		titleTable.center().top();
-		titleTable.add(title).expandX();
+		titleTable.add(title).expandX().pad(50);
 		
 		table.center();
 		
-		table.add(text).expandX();
+		table.add(playLabel).expandX();
 		table.row();
 		
-		table.add(instruction1).expandX();
-		table.row();
-		
-		table.add(instruction2).expandX();
+		table.add(quitLabel).expandX();
 		table.row();
 		
 		stage.addActor(titleTable);
@@ -70,8 +62,10 @@ public class MainMenuScreen implements Screen {
 	}
 	
 	private void handleInput() {
-		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+		if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
 			game.setScreen(new LivesRemainingScreen(game));
+		} else if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+			Gdx.app.exit();
 		}
 	}
 
