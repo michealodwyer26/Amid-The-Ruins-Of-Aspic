@@ -23,6 +23,7 @@ public class MainMenuScreen implements Screen {
 	Label text;
 	Label instruction1;
 	Label instruction2;
+	Label title;
 		
 	public MainMenuScreen(Platformer game) {
 		this.game = game;
@@ -32,19 +33,34 @@ public class MainMenuScreen implements Screen {
 		stage = new Stage(viewport, game.batch);
 		
 		Table table = new Table();
-		table.center();
-		table.setFillParent(true);
+		Table titleTable = new Table();
 		
+		titleTable.setFillParent(true);
+		
+		table.setFillParent(true);
+		//table.setDebug(true);
+
+				
+		title = new Label("AMID THE RUINS OF ASPIC", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		text = new Label("PRESS ENTER", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		instruction1 = new Label("MOVE WITH THE ARROW KEYS", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		instruction2 = new Label("PRESS W TO WHIP, PRESS SPACE TO JUMP", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("data/fonts/size15/15.fnt"), false), Color.WHITE));
 		
+		titleTable.center().top();
+		titleTable.add(title).expandX();
+		
+		table.center();
+		
 		table.add(text).expandX();
 		table.row();
+		
 		table.add(instruction1).expandX();
 		table.row();
-		table.add(instruction2).expandX();
 		
+		table.add(instruction2).expandX();
+		table.row();
+		
+		stage.addActor(titleTable);
 		stage.addActor(table);
 	}
 	
